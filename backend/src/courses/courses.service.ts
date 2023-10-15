@@ -34,6 +34,7 @@ export class CoursesService {
   }
 
   async createCourse(course: Course): Promise<Course> {
+    console.log(course);
     return this.coursesRepository.save(course);
   }
 
