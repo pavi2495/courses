@@ -1,0 +1,27 @@
+# Dependency directories
+node_modules/
+
+# Environment variables file (if using dotenv or similar)
+.env
+
+# Compiled output
+dist/
+build/
+*.js
+
+# Logs and debugging files
+logs/
+*.log
+npm-debug.log*
+
+# Editor-specific files
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Dependency lock files
+yarn.lock
+package-lock.json
