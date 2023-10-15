@@ -9,8 +9,8 @@ import {
   Query,
   ParseIntPipe,
 } from '@nestjs/common';
-import { Course } from './course.entity'; // Assuming the Course entity file is named 'course.entity.ts'
-import { CoursesService } from './courses.service'; // Assuming your service is named 'CoursesService'
+import { Course } from './course.entity'; 
+import { CoursesService } from './courses.service'; 
 
 @Controller('courses')
 export class CoursesController {
