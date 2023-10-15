@@ -9,8 +9,8 @@ import {
   Query,
   ParseIntPipe,
 } from '@nestjs/common';
-import { Course } from './course.entity'; 
-import { CoursesService } from './courses.service'; 
+import { Course } from './course.entity';
+import { CoursesService } from './courses.service';
 
 @Controller('courses')
 export class CoursesController {
@@ -44,7 +44,7 @@ export class CoursesController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    this.coursesService.remove(id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.coursesService.remove(id);
   }
 }
