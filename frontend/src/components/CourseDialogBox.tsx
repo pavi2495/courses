@@ -185,7 +185,7 @@ const CourseDialogBox: React.FC<CourseDialogBoxProps> = ({
           fullWidth
           variant="outlined"
           margin="dense"
-          value={members}
+          value={members !== "0" ? members : ""}
           onChange={handleMembersChange}
           placeholder="Members"
         />
@@ -193,7 +193,7 @@ const CourseDialogBox: React.FC<CourseDialogBoxProps> = ({
           fullWidth
           variant="outlined"
           margin="dense"
-          value={coachId}
+          value={coachId !== "0" ? coachId : ""}
           onChange={handleCoachIdChange}
           placeholder="Coach ID"
         />
