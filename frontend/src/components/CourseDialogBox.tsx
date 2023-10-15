@@ -31,10 +31,10 @@ const CourseDialogBox: React.FC<CourseDialogBoxProps> = ({
   onClose,
   onSave,
   title: initialTitle,
-  name: initialName,
-  members: initialMembers,
-  coachId: initialCoachId,
-  description: initialDescription,
+  name: initialName = "",
+  members: initialMembers = 0,
+  coachId: initialCoachId = 0,
+  description: initialDescription = "",
 }) => {
   const [name, setName] = React.useState(initialName);
   const [members, setMembers] = React.useState(initialMembers.toString());
@@ -156,6 +156,7 @@ const CourseDialogBox: React.FC<CourseDialogBoxProps> = ({
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle
+        data-testid="initialTitleId"
         sx={{
           backgroundColor: colors.lightBackground,
           color: colors.primary,
