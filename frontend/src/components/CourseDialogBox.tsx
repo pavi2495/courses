@@ -81,11 +81,16 @@ const CourseDialogBox: React.FC<CourseDialogBoxProps> = ({
 
   const handleMembersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newMembers = e.target.value.slice(0, 3); // Assuming maximum 3 digits for members
-    setMembers(newMembers);
+
+    // Check if the input consists of only numeric characters
+    if (/^\d*$/.test(newMembers)) {
+      setMembers(newMembers);
+    }
+
     setIsSaveDisabled((prevState) => {
       const isNameEmpty = !name.trim();
-      const isMembersInvalid = newMembers === "0";
-      const isCoachIdInvalid = coachId === "0";
+      const isMembersInvalid = newMembers === "" || parseInt(newMembers) === 0; // Check if empty or 0
+      const isCoachIdInvalid = coachId === "" || parseInt(coachId) === 0; // Check if empty or 0
       const isDescriptionEmpty = !description.trim();
 
       return (
@@ -99,11 +104,16 @@ const CourseDialogBox: React.FC<CourseDialogBoxProps> = ({
 
   const handleCoachIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newCoachId = e.target.value.slice(0, 3); // Assuming maximum 3 digits for coachId
-    setCoachId(newCoachId);
+
+    // Check if the input consists of only numeric characters
+    if (/^\d*$/.test(newCoachId)) {
+      setCoachId(newCoachId);
+    }
+
     setIsSaveDisabled((prevState) => {
       const isNameEmpty = !name.trim();
-      const isMembersInvalid = members === "0";
-      const isCoachIdInvalid = newCoachId === "0";
+      const isMembersInvalid = members === "" || parseInt(members) === 0; // Check if empty or 0
+      const isCoachIdInvalid = newCoachId === "" || parseInt(newCoachId) === 0; // Check if empty or 0
       const isDescriptionEmpty = !description.trim();
 
       return (
@@ -189,6 +199,11 @@ const CourseDialogBox: React.FC<CourseDialogBoxProps> = ({
           value={members !== "0" ? members : ""}
           onChange={handleMembersChange}
           placeholder="Members"
+          type="number"
+          inputProps={{
+            inputMode: "numeric",
+            pattern: "[0-9]*", // Only allow numeric input
+          }}
         />
         <TextField
           fullWidth
@@ -197,6 +212,11 @@ const CourseDialogBox: React.FC<CourseDialogBoxProps> = ({
           value={coachId !== "0" ? coachId : ""}
           onChange={handleCoachIdChange}
           placeholder="Coach ID"
+          type="number"
+          inputProps={{
+            inputMode: "numeric",
+            pattern: "[0-9]*", // Only allow numeric input
+          }}
         />
         <TextField
           fullWidth
