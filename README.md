@@ -1,97 +1,46 @@
-# React Frontend and NestJS Backend with Jest Testing
+# Course Management System - Web Application
 
-This repository contains a course management system web application demonstrating a React frontend application and a NestJS backend API, along with Jest testing for the backend.
+This repository contains a course management system web application demonstrating a React frontend application and a NestJS backend API, all running inside Docker containers. Jest tests are included for both the frontend and backend.
 
 ## Prerequisites
 
-- **Node.js:** Make sure you have Node.js installed on your system. You can download it from [nodejs.org](https://nodejs.org/).
+- **Docker:** Make sure you have Docker installed on your system. You can download it from [Docker's official website](https://www.docker.com/).
 
 ## Setup Instructions
 
-### Frontend (React)
+To run the application, execute the following command in the root directory of the project:
 
-1. **Navigate to the `frontend` directory:**
+```bash
+DB_PASSWORD=hello docker-compose up
+```
 
-   ```bash
-   cd frontend
-   ```
+This command will build and start both the frontend and backend services defined in the `docker-compose.yml` file. The React frontend will be accessible at `http://localhost:3000`, and the NestJS backend will be accessible at `http://localhost:3001`.
 
-2. **Install dependencies:**
+## Testing
 
-   ```bash
-   npm install
-   ```
+### Backend
 
-3. **Start the React development server:**
+To run Jest tests for the backend, use the following command:
 
-   ```bash
-   npm run start
-   ```
+```bash
+DB_PASSWORD=hello docker-compose run backend npm run test
+```
 
-   The React application will be running at `http://localhost:3000`.
+### Frontend
 
-### Backend (NestJS)
+To run Jest tests for the frontend, use the following command:
 
-1. **Navigate to the `backend` directory:**
-
-   ```bash
-   cd backend
-   ```
-
-2. **Install dependencies:**
-
-   ```bash
-   npm install
-   ```
-
-3. **Set up the environment variables:**
-   - Create a `.env` file in the `backend` directory.
-   - Add the following environment variables to the `.env` file:
-
-   ```
-   DB_HOST=localhost
-   DB_USER=root
-   DB_PASSWORD=yourpassword
-   DB_DATABASE=courses
-   ```
-
-   Replace `yourpassword` with your MySQL/MariaDB database password.
-
-4. **Run the NestJS backend:**
-
-   ```bash
-   npm run start
-   ```
-
-   The NestJS backend will be running at `http://localhost:3001`.
-
-### Backend Testing with Jest
-
-1. **Navigate to the `backend` directory if you are not already there:**
-
-   ```bash
-   cd backend
-   ```
-
-2. **Run Jest tests:**
-
-   ```bash
-   npm run test
-   ```
-
-   Jest will execute the tests and provide the results in the console.
+```bash
+DB_PASSWORD=hello docker-compose run frontend npm run test
+```
 
 ## Directory Structure
 
-- `frontend/`: Contains the React frontend application.
-- `backend/`: Contains the NestJS backend application and Jest tests.
-- `backend/tests/`: Contains Jest test files for the backend.
+- `frontend/`: Contains the React frontend application and tests.
+- `backend/`: Contains the NestJS backend application and tests.
 
 ## Courses
 
-- Ensure your MySQL/MariaDB server is running and accessible with the provided credentials in the `.env` file.
+- Ensure your MySQL/MariaDB server is running and accessible.
 - The React frontend communicates with the NestJS backend API. Make sure the backend server is running while using the frontend application.
-- You can modify the database connection details and API endpoints according to your requirements in the `.env` and backend code respectively.
-
----# courses
-# courses
+- You can modify the database connection details and API endpoints according to your requirements directly in the `docker-compose.yml` file.
