@@ -29,13 +29,14 @@ export class CoursesService {
     return { courses, totalCount };
   }
 
-  findOne(id: number): Promise<Course> {
-    return this.coursesRepository.findOneBy({ id: id });
+  async findOne(id: number): Promise<Course> {
+    return await this.coursesRepository.findOneBy({ id: id });
   }
 
   async createCourse(course: Course): Promise<Course> {
-    return this.coursesRepository.save(course);
-  }
+    const savedCourse = await this.coursesRepository.save(course);
+    return savedCourse; // Return the saved course data
+}
 
   async remove(id: number): Promise<void> {
     const result = await this.coursesRepository.delete(id);
