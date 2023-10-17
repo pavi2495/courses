@@ -19,23 +19,20 @@ def create_course(course_data):
 
 # Function to create a new course and return its ID
 def create_course_and_get_id(course_data):
-    url = f"{BASE_URL}/courses"
-    response = requests.post(url, json=course_data)
-    created_course = response.json()
-    print(created_course.get('id'))
+    created_course = create_course(course_data)
     return created_course.get('id')
 
 # Function to update an existing course using its ID
 def update_course(course_id, course_data):
     url = f"{BASE_URL}/courses/{course_id}"
-    response = requests.put(url, json=course_data)
+    response = requests.patch(url, json=course_data)
     return response.json()
 
 # Function to delete a course
 def delete_course(course_id):
     url = f"{BASE_URL}/courses/{course_id}"
     response = requests.delete(url)
-    if response.status_code == 204:
+    if response.status_code == 200:
         print(f"Course with ID {course_id} deleted successfully.")
     else:
         print(f"Failed to delete course with ID {course_id}.")
@@ -46,7 +43,7 @@ if __name__ == "__main__":
     courses = get_courses()
     print("List of Courses:")
     print(courses)
-# Create a new course and get its ID
+    # Create a new course and get its ID
     new_course_data = {
         "name": "New Course",
         "members": 50,
