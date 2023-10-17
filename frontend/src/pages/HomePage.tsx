@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Fab,
@@ -15,13 +15,20 @@ import {
   Typography,
   Pagination,
   useTheme,
+  Grid,
+  styled,
+  TypographyProps,
+  BoxProps,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Course, createCourse, deleteCourse, getCourses } from "../api";
-import colors from "../colors";
-import DeleteConfirmationDialogBox from "../components/DeleteConfirmDialogBox";
-import CourseDialogBox from "../components/CourseDialogBox";
+import CourseDialogBox from "../components/DialogBox/CourseDialogBox";
+import SectionCard from "../components/SectionCard/SectionCard";
+import { CreateButton } from "../components/Button/createButton";
+import { FlexRow } from "../components/Flex/Flex";
+import DeleteConfirmationDialogBox from "../components/DialogBox/DeleteConfirmDialogBox";
+import { defaultColorTemplate } from "../UIProvider";
 
 const HomePage: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -146,191 +153,342 @@ const HomePage: React.FC = () => {
     }
   };
 
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flex: 1,
-      }}
-    >
-      <Stack
+  interface CourseOverviewContentRowProps {
+    id: number;
+    courseName: string;
+    members?: number;
+    coachName?: string;
+    description?: string;
+  }
+
+  const CourseOverviewContent = styled(Typography)<TypographyProps>(() => ({
+    overflow: "hidden",
+    textAlign: "center",
+    fontWeight: 500,
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
+    fontSize: "10px",
+  }));
+
+  const CourseOverviewHeaderBox = styled(Box)<BoxProps>(() => ({
+    borderRadius: "5px",
+    color: "#00205B",
+    backgroundColor: "#D1DBFF",
+    height: "20px",
+    // width: '70px',
+    fontFamily: "'Poppins', normal",
+    cursor: "pointer",
+    padding: "3px 3px 3px 3px",
+    display: "flex",
+    alignContent: "center",
+    justifyContent: "center",
+  }));
+
+  const CourseOverviewHeaderTitle = styled(Typography)<TypographyProps>(() => ({
+    overflow: "hidden",
+    textAlign: "center",
+    fontWeight: 600,
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
+    fontSize: "12px",
+  }));
+
+  const CourseOverviewContentRow: FC<CourseOverviewContentRowProps> = ({
+    id,
+    courseName,
+    members,
+    coachName,
+    description,
+  }) => {
+    const navigate = useNavigate();
+
+    return (
+      <Grid
+        container
+        flex={1}
         sx={{
-          position: "absolute",
-          top: "0px",
-          right: "0",
-          left: "0",
-          bottom: "0px",
-          padding: "30px",
-          backgroundColor: colors.lightBackground,
+          padding: "10px",
         }}
       >
-        <Typography
-          component={"h1"}
-          sx={{
-            color: colors.primary,
-            textAlign: "center",
-            marginBottom: "20px",
-            lineHeight: "56px",
-            fontSize: "45px",
-            fontWeight: 600,
-            fontFamily: "sans-serif",
-            overflow: "hidden",
-          }}
+        <Grid
+          item
+          component={Stack}
+          md={3}
+          sm={3}
+          xs={3}
+          sx={{ justifyContent: "center" }}
         >
-          Courses
-        </Typography>
-        <Box
-          ref={homePagePageListRef}
-          sx={{
-            overflowY: "auto",
-            marginBottom: "20px",
-            "&::-webkit-scrollbar": {
-              width: "0.4em",
-            },
-            "&::-webkit-scrollbar-track": {
-              "-webkit-box-shadow": "inset 0 0 6px rgba(0,0,0,0.00)",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "rgba(0,0,100,.1)",
-              borderRadius: "10px",
-            },
-          }}
-        >
-          {courses.map((course) => (
-            <div
-              key={course.id}
-              style={{
-                backgroundColor: colors.secondary,
-                padding: "10px",
-                borderRadius: "5px",
-                marginBottom: "10px",
-                position: "relative",
-                display: "flex",
-                alignItems: "center", // Align items vertically within each list item
-                marginRight: "5px",
-              }}
-              onClick={() => navigate(`/course/${course.id}`)}
-            >
-              <div
-                style={{
-                  cursor: "pointer",
-                  color: colors.primary, // Set the text color to primary color from the palette
-                  flexGrow: 1,
-                  marginRight: "10px",
-                }}
-              >
-                <Typography
-                  sx={{
-                    color: colors.primary,
-                    lineHeight: "28px",
-                    fontSize: "20px",
-                    fontWeight: 400,
-                    fontFamily: "sans-serif",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis", // Add ellipsis for overflowed text
-                    whiteSpace: "nowrap", // Prevent the text from wrapping to the next line
-                    [theme.breakpoints.down("md")]: {
-                      maxWidth: "150px", // Set different maxWidth for mobile view (for screens smaller than 'md' breakpoint)
-                    },
-                    [theme.breakpoints.up("md")]: {
-                      maxWidth: "400px", // Default maxWidth for screens larger than or equal to 'md' breakpoint
-                    },
-                  }}
-                >
-                  {course.name}
-                </Typography>
-              </div>
-              <IconButton
-                color="secondary"
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent click propagation to the parent div
-                  handleDeleteConfirmationOpen(course.id, course.name);
-                }}
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "10px",
-                  transform: "translateY(-50%)",
-                  color: colors.accent, // Set the icon color to accent color from the palette
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </div>
-          ))}
-        </Box>
-        <Stack
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center", // Center the items horizontally
-            position: "fixed",
-            bottom: "20px",
-            left: "50%", // Center the stack in the middle of the screen
-            transform: "translateX(-50%)", // Center the stack in the middle of the screen
-          }}
-        >
-          <Pagination
-            count={Math.ceil((totalCount || 0) / itemsPerPage)}
-            size="small"
-            // On page number selection
-            onChange={(event, value) => {
-              setHomePageFetchNextPage({
-                ...homePageFetchNextPage,
-                page: value,
-              });
-              homePagePageListRef.current?.scrollTo(0, 0);
-            }}
+          <Box
             sx={{
-              // Adjust font size of the pagination buttons
-              "& .MuiPaginationItem-root": {
-                fontSize: "0.6rem",
-                minWidth: "30px",
-                height: "30px",
+              borderRadius: "10px",
+              height: "20px",
+              cursor: "pointer",
+              padding: "4px 4px 4px 4px",
+              display: "flex",
+              alignContent: "center",
+              justifyContent: "center",
+              "&:hover": {
+                background: "#D1DBFF",
               },
             }}
-          />
-        </Stack>
-
-        <Fab
-          color="primary"
-          aria-label="add"
-          style={{
-            position: "fixed",
-            bottom: "20px",
-            right: "20px",
-            backgroundColor: colors.accent,
-          }}
-          onClick={handleOpenDialog}
+          >
+            <CourseOverviewContent
+              sx={{
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                navigate(`/course/${id}`);
+              }}
+            >
+              {courseName}
+            </CourseOverviewContent>
+          </Box>
+        </Grid>
+        <Grid
+          item
+          component={Stack}
+          md={2}
+          sm={2}
+          xs={2}
+          sx={{ justifyContent: "center" }}
         >
-          <AddIcon style={{ color: colors.secondary }} />
-        </Fab>
+          <CourseOverviewContent> {members}</CourseOverviewContent>
+        </Grid>
+        <Grid
+          item
+          component={Stack}
+          md={2}
+          sm={2}
+          xs={2}
+          sx={{ justifyContent: "center" }}
+        >
+          <CourseOverviewContent> {coachName}</CourseOverviewContent>
+        </Grid>
+        <Grid
+          item
+          component={Stack}
+          md={4}
+          sm={4}
+          xs={4}
+          sx={{ justifyContent: "center" }}
+        >
+          <CourseOverviewContent> {description}</CourseOverviewContent>
+        </Grid>
+        <Grid
+          item
+          component={Stack}
+          md={1}
+          sm={1}
+          xs={1}
+          sx={{ justifyContent: "center" }}
+        >
+          <div style={{ display: "flex" }}>
+            <DeleteIcon
+              color="error"
+              sx={{ cursor: "pointer" }}
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent click propagation to the parent div
+                handleDeleteConfirmationOpen(id, courseName);
+              }}
+            ></DeleteIcon>
+          </div>
+        </Grid>
+      </Grid>
+    );
+  };
 
-        <CourseDialogBox
-          open={isDialogOpen}
-          onClose={handleCloseDialog}
-          onSave={handleSaveCourse}
-          name={editedCourse.name}
-          members={editedCourse.members}
-          coachId={editedCourse.coachId}
-          description={editedCourse.description}
-          title={"Add New Course"}
-        />
+  const CourseOverviewHeaderRow = () => {
+    return (
+      <Grid
+        container
+        flex={1}
+        sx={{
+          padding: "10px",
+        }}
+      >
+        <Grid
+          item
+          component={Stack}
+          md={3}
+          sm={3}
+          xs={3}
+          sx={{ justifyContent: "center" }}
+        >
+          <CourseOverviewHeaderBox onClick={() => {}}>
+            <CourseOverviewHeaderTitle>Course Name</CourseOverviewHeaderTitle>
+          </CourseOverviewHeaderBox>
+        </Grid>
+        <Grid
+          item
+          component={Stack}
+          md={2}
+          sm={2}
+          xs={2}
+          sx={{ justifyContent: "center" }}
+        >
+          <CourseOverviewHeaderBox onClick={() => {}}>
+            <CourseOverviewHeaderTitle>Members</CourseOverviewHeaderTitle>
+          </CourseOverviewHeaderBox>
+        </Grid>
+        <Grid
+          item
+          component={Stack}
+          md={2}
+          sm={2}
+          xs={2}
+          sx={{ justifyContent: "center" }}
+        >
+          <CourseOverviewHeaderBox onClick={() => {}}>
+            <CourseOverviewHeaderTitle>Coach</CourseOverviewHeaderTitle>
+          </CourseOverviewHeaderBox>
+        </Grid>
+        <Grid
+          item
+          component={Stack}
+          md={4}
+          sm={4}
+          xs={4}
+          sx={{ justifyContent: "center" }}
+        >
+          <CourseOverviewHeaderBox onClick={() => {}}>
+            <CourseOverviewHeaderTitle>
+              Course Description
+            </CourseOverviewHeaderTitle>
+          </CourseOverviewHeaderBox>
+        </Grid>
+      </Grid>
+    );
+  };
 
-        <DeleteConfirmationDialogBox
-          onOpenDialogBox={deleteConfirmationOpen}
-          onClickDeleteButton={handleDeleteCourse}
-          onCloseDialogBox={handleDeleteConfirmationClose}
-          courseToDelete={{ id: courseToDelete.id, name: courseToDelete.name }}
-        />
-        <Stack
-          direction={"row"}
-          sx={{
-            justifyContent: "center",
+  return (
+    <React.Fragment>
+      <Box
+        ref={homePagePageListRef}
+        sx={{
+          overflowY: "auto",
+          marginBottom: "20px",
+          "&::-webkit-scrollbar": {
+            width: "0.4em",
+          },
+          "&::-webkit-scrollbar-track": {
+            "-webkit-box-shadow": "inset 0 0 6px rgba(0,0,0,0.00)",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "rgba(0,0,100,.1)",
+            borderRadius: "10px",
+          },
+        }}
+      ></Box>
+      <Stack
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center", // Center the items horizontally
+          position: "fixed",
+          bottom: "20px",
+          left: "50%", // Center the stack in the middle of the screen
+          transform: "translateX(-50%)", // Center the stack in the middle of the screen
+        }}
+      >
+        <Pagination
+          count={Math.ceil((totalCount || 0) / itemsPerPage)}
+          size="small"
+          // On page number selection
+          onChange={(event, value) => {
+            setHomePageFetchNextPage({
+              ...homePageFetchNextPage,
+              page: value,
+            });
+            homePagePageListRef.current?.scrollTo(0, 0);
           }}
-        ></Stack>
+          sx={{
+            // Adjust font size of the pagination buttons
+            "& .MuiPaginationItem-root": {
+              fontSize: "0.6rem",
+              minWidth: "30px",
+              height: "30px",
+            },
+          }}
+        />
       </Stack>
-    </Box>
+
+      <Fab
+        aria-label="add"
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          backgroundColor: defaultColorTemplate.mainColor,
+        }}
+        onClick={handleOpenDialog}
+      >
+        <AddIcon style={{ color: "white" }} />
+      </Fab>
+
+      <CourseDialogBox
+        open={isDialogOpen}
+        onClose={handleCloseDialog}
+        onSave={handleSaveCourse}
+        name={editedCourse.name}
+        members={editedCourse.members}
+        coachId={editedCourse.coachId}
+        description={editedCourse.description}
+        title={"Add New Course"}
+      />
+
+      <DeleteConfirmationDialogBox
+        onOpenDialogBox={deleteConfirmationOpen}
+        onClickDeleteButton={handleDeleteCourse}
+        onCloseDialogBox={handleDeleteConfirmationClose}
+        courseToDelete={{
+          id: courseToDelete.id,
+          name: courseToDelete.name,
+        }}
+      />
+
+      {/* <ProjectOverviewCreateAndEditModal
+        open={createOrEditProjectModalOpen}
+        onClose={() => {
+          setCreateOrEditProjectModalOpen(false);
+        }}
+        onCreateProject={handleCreateProject}
+        onUpdateProject={handleUpdateProject}
+      /> */}
+      <div style={{ padding: "20px" }}>
+        <FlexRow sx={{ maxHeight: "50px", justifyContent: "right" }}>
+          <CreateButton
+            id="ProjectFundingHistoryCreateProjectButton"
+            variant="contained"
+            size="small"
+            onClick={() => {
+              handleOpenDialog();
+            }}
+          >
+            Add Course
+          </CreateButton>
+        </FlexRow>
+        <SectionCard
+          id={"CMSCourseOverviewSection"}
+          header="Course Overview"
+          openAddModal={handleOpenDialog}
+          disableEditing={true}
+        >
+          <CourseOverviewHeaderRow></CourseOverviewHeaderRow>
+          {courses &&
+            courses.map((course, index) => {
+              return (
+                <CourseOverviewContentRow
+                  id={course?.id}
+                  courseName={course?.name}
+                  members={course?.members}
+                  coachName={"Frau. Anna"}
+                  description={course.description}
+                />
+              );
+            })}
+        </SectionCard>
+      </div>
+    </React.Fragment>
   );
 };
 
