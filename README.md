@@ -1,7 +1,6 @@
-```markdown
 # Course Management System - Web Application
 
-This repository contains a course management system web application demonstrating a React frontend application and a NestJS backend API, all running inside Docker containers. Jest tests are included for both the frontend and backend.
+This repository contains a Course Management System - web application demonstrating a React frontend application and a NestJS backend API, all running inside Docker containers. Jest tests are included for both the frontend and backend.
 
 ## Prerequisites
 
@@ -32,6 +31,7 @@ DB_PASSWORD=hello docker-compose run backend npm run test
 To run Python Script for the backend, use the following command:
 
 ```bash
+ cd backend
  python course_api_client.py
 ```
 
@@ -59,4 +59,3 @@ On the backend, Nest.js was my choice because of its robustness and scalability.
 I used Docker to containerize the application, making it easy to deploy and manage. While I didn't dive into Kubernetes in this iteration, it's certainly a consideration for future scaling.
 
 Feel free to explore the code, and if you have any questions or suggestions, don't hesitate to reach out. Happy coding! 😊
-```
