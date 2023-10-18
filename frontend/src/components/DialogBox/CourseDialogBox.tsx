@@ -52,7 +52,7 @@ const CourseDialogBox: React.FC<CourseDialogBoxProps> = ({
   useEffect(() => {
     setIsSaveDisabled((prevState) => {
       const isNameEmpty = !name.trim();
-      const isMembersInvalid = members === "0";
+      const isMembersInvalid = members === "";
       const isDescriptionEmpty = !description.trim();
 
       return isNameEmpty || isMembersInvalid || isDescriptionEmpty;
@@ -73,25 +73,28 @@ const CourseDialogBox: React.FC<CourseDialogBoxProps> = ({
   };
 
   const handleMembersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newMembers = e.target.value.slice(0, 3); // Assuming maximum 3 digits for members
+    let newMembers = e.target.value.slice(0, 3); // Assuming maximum 3 digits for members
 
-    // if (/^\d*$/.test(newMembers)) {
+    if (/^\d*$/.test(newMembers)) {
+      // Convert newMembers to a number
+      const membersNumber = parseInt(newMembers);
+
+      // Ensure newMembers is within the range of 1 to 100
+      if (membersNumber < 1) {
+        newMembers = "1";
+      } else if (membersNumber > 100) {
+        newMembers = "100";
+      }
+
       setMembers(newMembers);
-    // }
+    }
 
     setIsSaveDisabled((prevState) => {
       const isNameEmpty = !name.trim();
       const isMembersInvalid = !newMembers.trim();
-      const isMembersGreater = parseInt(newMembers) > 100;
       const isDescriptionEmpty = !description.trim();
 
-      return (
-        isNameEmpty ||
-        isMembersInvalid ||
-        isDescriptionEmpty 
-        // ||
-        // isMembersGreater
-      );
+      return isNameEmpty || isMembersInvalid || isDescriptionEmpty;
     });
   };
 
@@ -155,20 +158,27 @@ const CourseDialogBox: React.FC<CourseDialogBoxProps> = ({
           }}
         />
 
-        <TextField
-          fullWidth
-          variant="outlined"
-          value={members}
-          onChange={handleMembersChange}
-          placeholder="Members"
-          InputProps={{
-            style: {
-              borderRadius: "5px",
-              background: "#f7f7f7",
-              marginBottom: "5px",
-            },
-          }}
-        />
+        <div>
+          <TextField
+            fullWidth
+            variant="outlined"
+            value={members}
+            onChange={handleMembersChange}
+            placeholder="Members"
+            type="number"
+            InputProps={{
+              style: {
+                borderRadius: "5px",
+                background: "#f7f7f7",
+                marginBottom: "5px",
+              },
+            }}
+          />
+          <div style={{ color: "gray", fontSize: "0.8rem" }}>
+            Please enter a number between 1 and 100 for Members.
+          </div>
+        </div>
+
         <TextField
           disabled
           multiline
